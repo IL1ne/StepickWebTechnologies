@@ -1,43 +1,35 @@
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
-from django.views.decorators.http import require_GET
 from qa.models import Question, Answer
 from qa.forms import AskForm, AnswerForm
 from django.core.paginator import Paginator
 
+from django.contrib.auth.forms import UserCreationForm
+from django.urls import reverse_lazy
+from django.views import generic
+
 # Create your views here.
 
 
-def login(request):
-
-    return HttpResponse('login')
-
-
-def signup(request):
-
-    return HttpResponse('signup')
-
-
-def logout(request):
-
-    return HttpResponse('logout')
+class SignUp(generic.CreateView):
+    form_class = UserCreationForm
+    success_url = reverse_lazy('login')
+    template_name = 'registration/signup.html'
 
 
 def show_question(request, id_question):
 
     question = get_object_or_404(Question, id=id_question)
     if request.method == "POST":
-        form = AnswerForm(request.POST)
-        if form.is_valid():
-
-            form.question = id_question
-            form.save()
-            url = question.get_absolute_url()
-            return HttpResponseRedirect(url)
-        else:
-            HttpResponse('fuckup')
+        answer = Answer()
+        answer.question = question
+        answer.author = request.user
+        answer.text = request.POST.get('text')
+        answer.save()
+        url = question.get_absolute_url()
+        return HttpResponseRedirect(url)
     else:
-        form = AnswerForm(initial={'question': id_question})
+        form = AnswerForm()
     answers_list = Answer.objects.filter(question=id_question)
     return render(request, 'question_detail.html', {
         'question': question,
@@ -50,12 +42,13 @@ def ask(request):
 
     if request.method == "POST":
         form = AskForm(request.POST)
-        if form.is_valid():
-            question = form.save()
-            url = question.get_absolute_url()
-            return HttpResponseRedirect(url)
-        else:
-            HttpResponse('fuckup')
+        question = Question()
+        question.title = request.POST.get('title')
+        question.text = request.POST.get('text')
+        question.author = request.user
+        question.save()
+        url = question.get_absolute_url()
+        return HttpResponseRedirect(url)
     else:
         form = AskForm()
     return render(request, 'ask.html', {

@@ -1,18 +1,27 @@
-from django.forms import ModelForm, widgets
+from django.forms import ModelForm
 from qa.models import Question, Answer
+from django import forms
 
+# class AskForm(ModelForm):
 
-class AskForm(ModelForm):
+#     class Meta:
 
-    class Meta:
-
-        model = Question
-        fields = ['title', 'text', ]
-
+#         model = Question
+#         fields = ['title', 'text', ]
 
 class AnswerForm(ModelForm):
 
     class Meta:
 
         model = Answer
-        fields = ['text', 'question', ]
+        fields = ['text', ]
+
+
+class AskForm(forms.Form):
+
+    title = forms.CharField(max_length=600, required=True)
+    text = forms.CharField(max_length=3000, required=True)
+
+    class Meta:
+        model = Question
+        fields = ['title', 'text', ]

@@ -1,2 +1,7 @@
-# ignore all logs
+# ignore all
 *.sqlite3
+*.pyc
+*.cpython-36.pyc
+ask_app/
+web.rar
+

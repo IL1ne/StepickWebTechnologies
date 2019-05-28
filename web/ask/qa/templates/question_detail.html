@@ -1,4 +1,5 @@
 
+Active user is {{request.user}}
 <h1>
 	{{question.title}}
 </h1>
@@ -10,10 +11,10 @@
 <p>Likes {{question.likes}} and rating {{question.rating}}</p>
 
 
-<h2>Answers</h2>
+<h2>Answers:</h2>
 <ul>
 	{% for answer in answers %}
-		<li>{{answer.text}}</li>
+		<li>{{answer.text}} add by {{answer.author}}</li>
 	{% endfor %}
 </ul>
 
