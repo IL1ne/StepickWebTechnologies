@@ -25,3 +25,13 @@ class AskForm(forms.Form):
     class Meta:
         model = Question
         fields = ['title', 'text', ]
+
+
+class SignUpForm(forms.Form):
+
+    """docstring for registrationForm"""
+
+    username = forms.CharField(max_length=100)
+    email = forms.EmailField(widget=forms.EmailInput)
+    password = forms.CharField(widget=forms.PasswordInput)
+
