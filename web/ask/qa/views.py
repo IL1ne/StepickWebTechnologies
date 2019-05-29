@@ -4,7 +4,7 @@ from qa.models import Question, Answer
 from qa.forms import AskForm, AnswerForm, SignUpForm
 from django.core.paginator import Paginator
 from django.contrib.auth.models import User
-
+from datetime import datetime, timedelta
 # Create your views here.
 
 
@@ -21,7 +21,14 @@ def signup(request):
         password = request.POST.get('password')
         user = User.objects.create_user(username, email, password)
         user.save()
-        return HttpResponseRedirect('/')
+        url = '/'
+        response = HttpResponseRedirect(url)
+        response.set_cookie('sessionid',
+            user.id,
+            httponly,
+            expires=datetime.now() + timedelta(days=5)
+        )
+        return response
     else:
         form = SignUpForm()
     return render(request, 'registration/signup.html', {
